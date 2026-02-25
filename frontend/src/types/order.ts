@@ -6,5 +6,12 @@ export interface Order {
   composite_tax_rate: number;
   tax_amount: number;
   total_amount: number;
-  timestamp: string;
+  timestamp: string; 
+  state_rate: number;
+  county_rate: number;
+   city_rate: number
+   special_rates: number
+   state: string
+   county: string
+   city: string
 }
