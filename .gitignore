@@ -1,2 +1,6 @@
 .vite
 .DS_Store
+.vscode/
+venv/
+__pycache__/
+db.sqlite3
