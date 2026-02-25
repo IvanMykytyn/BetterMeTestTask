@@ -1,66 +1,59 @@
+"use client";
+
+import { useState } from "react";
+import { Table } from "@mantine/core";
 import type { Order } from "@/types/order";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-  TableCaption,
-} from "@/components/ui/table";
 
 interface Props {
   orders: Order[];
-  isLoading: boolean;
 }
 
-export function OrdersTable({ orders, isLoading }: Props) {
-  if (isLoading) {
-    return <p className="text-muted-foreground">Loading...</p>;
-  }
+export default function OrdersTable({ orders }: Props) {
+  const [sortBy, setSortBy] = useState<keyof Order | null>(null);
+  const [reversed, setReversed] = useState(false);
+
+  const sorted = [...orders].sort((a, b) => {
+    if (!sortBy) return 0;
+
+    const aVal = a[sortBy];
+    const bVal = b[sortBy];
+
+    if (typeof aVal === "number" && typeof bVal === "number") {
+      return reversed ? bVal - aVal : aVal - bVal;
+    }
+
+    return reversed
+      ? String(bVal).localeCompare(String(aVal))
+      : String(aVal).localeCompare(String(bVal));
+  });
+
+  const handleSort = (field: keyof Order) => {
+    const isReversed = field === sortBy ? !reversed : false;
+    setSortBy(field);
+    setReversed(isReversed);
+  };
 
   return (
-    <Table>
-      <TableCaption>List of wellness kit orders</TableCaption>
+    <Table striped highlightOnHover withTableBorder>
+      <Table.Thead>
+        <Table.Tr>
+          <Table.Th onClick={() => handleSort("id")}>ID</Table.Th>
+          <Table.Th onClick={() => handleSort("city")}>City</Table.Th>
+          <Table.Th onClick={() => handleSort("subtotal")}>Subtotal</Table.Th>
+          <Table.Th onClick={() => handleSort("total_amount")}>Total</Table.Th>
+        </Table.Tr>
+      </Table.Thead>
 
-      <TableHeader>
-        <TableRow>
-          <TableHead>ID</TableHead>
-          <TableHead>Subtotal</TableHead>
-          <TableHead>Tax</TableHead>
-          <TableHead>Total</TableHead>
-          <TableHead>Tax Rate</TableHead>
-          <TableHead className="text-right">Date</TableHead>
-        </TableRow>
-      </TableHeader>
-
-      <TableBody>
-        {orders.length === 0 ? (
-          <TableRow>
-            <TableCell colSpan={6} className="text-center">
-              No orders found
-            </TableCell>
-          </TableRow>
-        ) : (
-          orders.map((order) => (
-            <TableRow key={order.id}>
-              <TableCell className="font-medium">{order.id}</TableCell>
-
-              <TableCell>${order.subtotal.toFixed(2)}</TableCell>
-
-              <TableCell>${order.tax_amount.toFixed(2)}</TableCell>
-
-              <TableCell>${order.total_amount.toFixed(2)}</TableCell>
-
-              <TableCell>{order.composite_tax_rate}</TableCell>
-
-              <TableCell className="text-right">
-                {new Date(order.timestamp).toLocaleDateString()}
-              </TableCell>
-            </TableRow>
-          ))
-        )}
-      </TableBody>
+      <Table.Tbody>
+        {sorted.map((order) => (
+          <Table.Tr key={order.id}>
+            <Table.Td>{order.id}</Table.Td>
+            <Table.Td>{order.city}</Table.Td>
+            <Table.Td>${order.subtotal.toFixed(2)}</Table.Td>
+            <Table.Td>${order.total_amount.toFixed(2)}</Table.Td>
+          </Table.Tr>
+        ))}
+      </Table.Tbody>
     </Table>
   );
 }

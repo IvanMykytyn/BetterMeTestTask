@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-// import OrdersToolbar from "./OrdersToolbar";
-// Через те що поки нема
 import { useOrders } from "@/hooks/useOrders";
-import { OrdersTable } from "./OrdersTable";
-import { OrdersPagination } from "./OrdersPagination";
+import OrdersTable from "./OrdersTable";
+import OrdersToolbar from "./OrdersToolbar";
+import OrdersPagination from "./OrdersPagination";
 
 export default function OrdersPage() {
   const [search, setSearch] = useState("");
@@ -13,23 +12,26 @@ export default function OrdersPage() {
 
   const { data, isLoading } = useOrders({ search, page });
 
+  if (isLoading) return <div>Loading...</div>;
+  if (!data) return null;
+
   return (
-    <div>
+    <>
       <OrdersToolbar
         search={search}
-        onSearchChange={(value) => {
+        setSearch={(value) => {
           setSearch(value);
           setPage(1);
         }}
       />
 
-      <OrdersTable orders={data?.data ?? []} isLoading={isLoading} />
+      <OrdersTable orders={data.data} />
 
       <OrdersPagination
-        currentPage={page}
-        totalPages={data?.totalPages ?? 1}
-        onPageChange={setPage}
+        page={page}
+        totalPages={data.totalPages}
+        onChange={setPage}
       />
-    </div>
+    </>
   );
 }

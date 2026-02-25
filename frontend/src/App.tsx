@@ -8,7 +8,8 @@ import {
 } from "react-router-dom";
 
 import { Layout } from "@/components/shared/Layout";
-import { OrdersPage } from "@/pages/OrdersPage";
+import OrdersPage from "./components/orders/OrdersPage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -23,12 +24,15 @@ const router = createBrowserRouter([
 ]);
 
 export function App() {
+  const queryClient = new QueryClient();
   return (
-    <MantineProvider>
-      <ModalsProvider>
-        <Notifications />
-        <RouterProvider router={router} />
-      </ModalsProvider>
-    </MantineProvider>
+    <QueryClientProvider client={queryClient}>
+      <MantineProvider>
+        <ModalsProvider>
+          <Notifications />
+          <RouterProvider router={router} />
+        </ModalsProvider>
+      </MantineProvider>
+    </QueryClientProvider>
   );
 }

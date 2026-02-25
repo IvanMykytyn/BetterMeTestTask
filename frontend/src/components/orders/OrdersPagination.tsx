@@ -1,24 +1,23 @@
-import { Pagination } from "@mantine/core";
+"use client";
+
+import { Center, Pagination } from "@mantine/core";
 
 interface Props {
-  currentPage: number;
+  page: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  onChange: (page: number) => void;
 }
 
-export function OrdersPagination({
-  currentPage,
+export default function OrdersPagination({
+  page,
   totalPages,
-  onPageChange,
+  onChange,
 }: Props) {
   if (totalPages <= 1) return null;
 
   return (
-    <Pagination
-      value={currentPage}
-      onChange={onPageChange}
-      total={totalPages}
-      mt="md"
-    />
+    <Center mt="md">
+      <Pagination total={totalPages} value={page} onChange={onChange} />
+    </Center>
   );
 }
