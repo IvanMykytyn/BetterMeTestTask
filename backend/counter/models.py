@@ -32,12 +32,24 @@ class OrderTaxRecord(models.Model):
 
 # Модель для зберігання ставок податку для різних юрисдикцій
 # Дані взяті з офіційного сайту податкової служби штату Нью-Йорк
-class TaxRate(models.Model):
+class StateTaxRate(models.Model):
     state_name = models.CharField(max_length=100)
-    county_name = models.CharField(max_length=100)
-    city_name = models.CharField(max_length=100, null=True, blank=True)
-
     state_rate = models.DecimalField(max_digits=6, decimal_places=5)
+
+
+class CountyTaxRate(models.Model):
+    county_name = models.CharField(max_length=100)
     county_rate = models.DecimalField(max_digits=6, decimal_places=5)
+    class CityTaxRate(models.Model): city_name = models.CharField(max_length=100, null=True, blank=True)
     city_rate = models.DecimalField(max_digits=6, decimal_places=5)
+
+
+class CityTaxRate(models.Model):
+    city_name = models.CharField(max_length=100, null=True, blank=True)
+    city_rate = models.DecimalField(max_digits=6, decimal_places=5)
+
+
+class SpecialTaxRate(models.Model):
+    special_county_name = models.CharField(max_length=100, null=True, blank=True)
+    city_or_county_name = models.CharField(max_length=100, null=True, blank=True)
     special_rate = models.DecimalField(max_digits=6, decimal_places=5)
