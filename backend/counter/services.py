@@ -14,13 +14,12 @@ from .models import (
 )
 
 
-
 def process_orders_csv(file):
 
     start_time = time.time()
 
-    CITIES_SHP = "backend/shapefiles/tl_2025_36_place.shp"
-    COUNTIES_SHP = "backend/shapefiles/tl_2025_us_county.shp"
+    CITIES_SHP = "shapefiles/tl_2025_36_place.shp"
+    COUNTIES_SHP = "shapefiles/tl_2025_us_county.shp"
 
     cities_gdf = gpd.read_file(CITIES_SHP).to_crs(epsg=4326)
     counties_gdf = gpd.read_file(COUNTIES_SHP).to_crs(epsg=4326)
@@ -58,7 +57,8 @@ def process_orders_csv(file):
             city = None
 
         state_rate_obj = StateTaxRate.objects.filter(state_name=state).first()
-        county_rate_obj = CountyTaxRate.objects.filter(county_name=county).first()
+        county_rate_obj = CountyTaxRate.objects.filter(
+            county_name=county).first()
         city_rate_obj = CityTaxRate.objects.filter(city_name=city).first()
         special_rate_obj = SpecialTaxRate.objects.filter(
             city_or_county_name__in=[city, county]
