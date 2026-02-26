@@ -8,7 +8,7 @@ from django.utils.dateparse import parse_datetime
 from datetime import timezone as dt_timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from .services import process_orders_csv
+from .services import process_orders_csv, validate_csv
 from .models import OrderTaxRecord
 
 
@@ -23,7 +23,14 @@ def import_orders_api(request):
     file = request.FILES.get("orders_file")
     if not file:
         return JsonResponse({"error": "No file uploaded"}, status=400)
+    
+    # 1. Проверка CSV
+    errors = validate_csv(file)
+    if errors:
+        # если есть ошибки — возвращаем их и не трогаем БД
+        return JsonResponse({"errors": errors}, status=400)
 
+    # 2. Если ошибок нет — обрабатываем файл
     process_orders_csv(file)
     return JsonResponse({"message": "Orders imported successfully!"})
 
