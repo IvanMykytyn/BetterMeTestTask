@@ -1,6 +1,10 @@
 import type { ButtonProps } from "@mantine/core";
 import { Button as MantineButton } from "@mantine/core";
 
-export function Button(props: ButtonProps) {
+type Props = ButtonProps & {
+  onClick?: () => void;
+  type?: "button" | "submit" | "reset";
+}
+export function Button(props: Props) {
   return <MantineButton {...props} />;
 }
