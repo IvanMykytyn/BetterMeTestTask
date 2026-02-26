@@ -6,8 +6,8 @@ import { useCallback } from "react";
 import type { Resolver } from "react-hook-form";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
-import { MapPicker } from "../shared/MapPicker";
-import { Button } from "../shared/Button";
+import { MapPicker } from "../../shared/MapPicker";
+import { Button } from "../../shared/Button";
 
 const createOrderSchema = z.object({
   latitude: z.coerce
@@ -171,7 +171,7 @@ export function CreateOrderModal({ opened, onClose, onSubmit }: Props) {
 
           <Divider />
 
-          <Group gap="sm" justify="flex-end">
+          <Group gap="sm" justify="center">
             <Button variant="default" onClick={handleClose}>
               Cancel
             </Button>

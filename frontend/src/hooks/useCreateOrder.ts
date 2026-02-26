@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
 import { QUERY_KEYS } from '@/constants/queryKeys';
-import type { CreateOrderFormData } from '@/components/orders/CreateOrderModal';
+import type { CreateOrderFormData } from '@/components/orders/modals/CreateOrderModal';
+import { notifications } from '@mantine/notifications';
 
 interface CreateOrderPayload {
   latitude: number;
@@ -44,6 +45,18 @@ export function useCreateOrder() {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.ORDERS] });
+      notifications.show({
+        title: "Order created successfully",
+        message: "Order created successfully",
+        color: "green",
+      });
+    },
+    onError: (error) => {
+      notifications.show({
+        title: "Error creating order",
+        message: error.message,
+        color: "red",
+      });
     },
   });
 }

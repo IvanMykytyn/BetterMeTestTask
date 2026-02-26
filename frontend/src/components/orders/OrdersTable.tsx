@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Table } from "@mantine/core";
 import type { Order } from "@/types/order";
+import { formatCurrency, formatRate } from "@/utils/format";
 
 interface Props {
   orders: Order[];
@@ -9,14 +10,6 @@ interface Props {
 export default function OrdersTable({ orders }: Props) {
   const [sortBy, setSortBy] = useState<keyof Order | null>(null);
   const [reversed, setReversed] = useState(false);
-
-  const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-    }).format(value);
-
-  const formatRate = (value: number) => value.toFixed(5);
 
   const sorted = [...orders].sort((a, b) => {
     if (!sortBy) return 0;
