@@ -44,6 +44,7 @@ export default function OrdersTable({ orders }: Props) {
       <Table.Thead>
         <Table.Tr>
           <Table.Th onClick={() => handleSort("id")}>ID</Table.Th>
+          <Table.Th onClick={() => handleSort("timestamp")}>Date</Table.Th>
           <Table.Th onClick={() => handleSort("city")}>City</Table.Th>
 
           <Table.Th onClick={() => handleSort("subtotal")}>Subtotal</Table.Th>
@@ -52,23 +53,15 @@ export default function OrdersTable({ orders }: Props) {
 
           <Table.Th onClick={() => handleSort("total_amount")}>Total</Table.Th>
 
-          <Table.Th onClick={() => handleSort("composite_tax_rate")}>
-            Composite Rate
-          </Table.Th>
+          <Table.Th onClick={() => handleSort("composite_tax_rate")}>Composite Rate</Table.Th>
 
-          <Table.Th onClick={() => handleSort("state_rate")}>
-            State Rate
-          </Table.Th>
+          <Table.Th onClick={() => handleSort("state_rate")}>State Rate</Table.Th>
 
-          <Table.Th onClick={() => handleSort("county_rate")}>
-            County Rate
-          </Table.Th>
+          <Table.Th onClick={() => handleSort("county_rate")}>County Rate</Table.Th>
 
           <Table.Th onClick={() => handleSort("city_rate")}>City Rate</Table.Th>
 
-          <Table.Th onClick={() => handleSort("special_rates")}>
-            Special Rate
-          </Table.Th>
+          <Table.Th onClick={() => handleSort("special_rates")}>Special Rate</Table.Th>
         </Table.Tr>
       </Table.Thead>
 
@@ -76,6 +69,7 @@ export default function OrdersTable({ orders }: Props) {
         {sorted.map((order) => (
           <Table.Tr key={order.id}>
             <Table.Td>{order.id}</Table.Td>
+            <Table.Td>{new Date(order.timestamp).toLocaleDateString("en-US")}</Table.Td>
             <Table.Td>{order.city}</Table.Td>
 
             <Table.Td>{formatCurrency(order.subtotal)}</Table.Td>
