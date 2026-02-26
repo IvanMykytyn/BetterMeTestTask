@@ -1,5 +1,5 @@
 import json
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.core.paginator import Paginator
 from django.http import JsonResponse
@@ -98,7 +98,50 @@ def create_order_api(request):
 # GET /orders
 # ------------------------------
 def list_orders_api(request):
-    orders_qs = OrderTaxRecord.objects.all().order_by('-purchase_date')
+    orders_qs = OrderTaxRecord.objects.all().order_by("-purchase_date")
+
+    # Фильтры по времени (from_timestamp, to_timestamp)
+    from_ts_str = request.GET.get("from_timestamp")
+    if from_ts_str:
+        dt_from = parse_datetime(from_ts_str)
+        if dt_from is not None:
+            if timezone.is_naive(dt_from):
+                dt_from = timezone.make_aware(dt_from, timezone.get_default_timezone())
+            orders_qs = orders_qs.filter(purchase_date__gte=dt_from)
+
+    to_ts_str = request.GET.get("to_timestamp")
+    if to_ts_str:
+        dt_to = parse_datetime(to_ts_str)
+        if dt_to is not None:
+            if timezone.is_naive(dt_to):
+                dt_to = timezone.make_aware(dt_to, timezone.get_default_timezone())
+            orders_qs = orders_qs.filter(purchase_date__lte=dt_to)
+
+    # Фильтры по суммам (subtotal, total_amount)
+    def _parse_decimal_param(name: str):
+        raw = request.GET.get(name)
+        if raw is None:
+            return None
+        try:
+            return Decimal(raw)
+        except (InvalidOperation, ValueError):
+            return None
+
+    min_subtotal = _parse_decimal_param("min_subtotal")
+    if min_subtotal is not None:
+        orders_qs = orders_qs.filter(subtotal__gte=min_subtotal)
+
+    max_subtotal = _parse_decimal_param("max_subtotal")
+    if max_subtotal is not None:
+        orders_qs = orders_qs.filter(subtotal__lte=max_subtotal)
+
+    min_total = _parse_decimal_param("min_total")
+    if min_total is not None:
+        orders_qs = orders_qs.filter(total_amount__gte=min_total)
+
+    max_total = _parse_decimal_param("max_total")
+    if max_total is not None:
+        orders_qs = orders_qs.filter(total_amount__lte=max_total)
 
     # Фильтры по state, county, city
     for field in ["state", "county", "city"]:
