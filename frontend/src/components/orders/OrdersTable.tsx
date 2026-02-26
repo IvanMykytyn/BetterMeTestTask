@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { Table } from "@mantine/core";
 import type { Order } from "@/types/order";
