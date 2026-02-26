@@ -1,5 +1,5 @@
 from django.urls import path
-import views
+from . import views
 
 urlpatterns = [
     path('orders/import', views.import_orders_api, name='orders_import'),
