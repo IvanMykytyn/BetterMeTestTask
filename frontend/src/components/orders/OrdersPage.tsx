@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useOrders } from "@/hooks/useOrders";
+import { useCreateOrder } from "@/hooks/useCreateOrder";
 import OrdersTable from "./OrdersTable";
 import OrdersToolbar from "./OrdersToolbar";
 import OrdersPagination from "./OrdersPagination";
 import { OrderFileDropzone } from "./OrderFileDropzone";
 import { Group, Modal } from "@mantine/core";
 import { Button } from "../shared/Button";
-import { CreateOrderModal, type CreateOrderFormData } from "./CreateOrderModal";
+import { CreateOrderModal } from "./CreateOrderModal";
 
 export default function OrdersPage() {
   const [search, setSearch] = useState("");
@@ -18,6 +19,7 @@ export default function OrdersPage() {
   const [importFile, setImportFile] = useState<File | null>(null);
 
   const { data, isLoading } = useOrders({ search, page });
+  const createOrder = useCreateOrder();
 
   return (
     <>
@@ -39,9 +41,8 @@ export default function OrdersPage() {
       <CreateOrderModal
         opened={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
-        onSubmit={(data: CreateOrderFormData) => {
-          console.log("Order created:", data);
-          setIsCreateOpen(false);
+        onSubmit={(data) => {
+          createOrder.mutate(data);
         }}
       />
 

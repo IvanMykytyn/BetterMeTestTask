@@ -1,8 +1,12 @@
 import { Divider, Group, Modal, NumberInput, Stack } from "@mantine/core";
+import { useDebouncedValue } from "@mantine/hooks";
+import { DatePickerInput } from "@mantine/dates";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useCallback } from "react";
 import type { Resolver } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { z } from "zod";
+import { MapPicker } from "../shared/MapPicker";
 import { Button } from "../shared/Button";
 
 const createOrderSchema = z.object({
@@ -15,6 +19,7 @@ const createOrderSchema = z.object({
     .min(-180, "Must be between -180 and 180")
     .max(180, "Must be between -180 and 180"),
   subtotal: z.coerce.number().min(0, "Must be positive"),
+  orderDate: z.string().optional(),
   file: z.any().optional(),
 });
 
@@ -31,6 +36,7 @@ export function CreateOrderModal({ opened, onClose, onSubmit }: Props) {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm<CreateOrderFormData>({
     resolver: zodResolver(createOrderSchema) as Resolver<CreateOrderFormData>,
@@ -38,9 +44,25 @@ export function CreateOrderModal({ opened, onClose, onSubmit }: Props) {
       latitude: undefined,
       longitude: undefined,
       subtotal: undefined,
+      orderDate: new Date().toISOString().slice(0, 10),
       file: undefined,
     },
   });
+
+  const latitude = useWatch({ control, name: "latitude", defaultValue: undefined });
+  const longitude = useWatch({ control, name: "longitude", defaultValue: undefined });
+  const [debouncedCoords] = useDebouncedValue(
+    { lat: latitude, lng: longitude },
+    1000
+  );
+
+  const handleCoordinatesChange = useCallback(
+    (lat: number, lng: number) => {
+      setValue("latitude", lat, { shouldValidate: true });
+      setValue("longitude", lng, { shouldValidate: true });
+    },
+    [setValue]
+  );
 
   const handleClose = () => {
     reset();
@@ -73,35 +95,47 @@ export function CreateOrderModal({ opened, onClose, onSubmit }: Props) {
       >
         <Stack gap="lg">
           <Stack gap="md">
-            <Controller
-              name="latitude"
-              control={control}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label="Latitude"
-                  placeholder="e.g. 40.7128"
-                  decimalScale={6}
-                  error={errors.latitude?.message}
-                  allowDecimal
-                />
-              )}
+            <MapPicker
+              latitude={latitude}
+              longitude={longitude}
+              flyToLatitude={debouncedCoords.lat}
+              flyToLongitude={debouncedCoords.lng}
+              onCoordinatesChange={handleCoordinatesChange}
             />
 
-            <Controller
-              name="longitude"
-              control={control}
-              render={({ field }) => (
-                <NumberInput
-                  {...field}
-                  label="Longitude"
-                  placeholder="e.g. -74.006"
-                  decimalScale={6}
-                  error={errors.longitude?.message}
-                  allowDecimal
-                />
-              )}
-            />
+            <div className="flex gap-2 w-full">
+              <Controller
+                name="latitude"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    {...field}
+                    label="Latitude"
+                    placeholder="e.g. 40.7128"
+                    decimalScale={6}
+                    className="flex-1"
+                    error={errors.latitude?.message}
+                    allowDecimal
+                  />
+                )}
+              />
+
+              <Controller
+                name="longitude"
+                control={control}
+                render={({ field }) => (
+                  <NumberInput
+                    {...field}
+                    label="Longitude"
+                    placeholder="e.g. -74.006"
+                    decimalScale={6}
+                    className="flex-1"
+                    error={errors.longitude?.message}
+                    allowDecimal
+                  />
+                )}
+              />
+            </div>
 
             <Controller
               name="subtotal"
@@ -118,11 +152,26 @@ export function CreateOrderModal({ opened, onClose, onSubmit }: Props) {
                 />
               )}
             />
+
+            <Controller
+              name="orderDate"
+              control={control}
+              render={({ field }) => (
+                <DatePickerInput
+                  label="Order date"
+                  placeholder="Pick date"
+                  value={field.value ?? null}
+                  onChange={(date) => field.onChange(date ?? undefined)}
+                  maxDate={new Date()}
+                  error={errors.orderDate?.message}
+                />
+              )}
+            />
           </Stack>
 
           <Divider />
 
-          <Group gap="sm">
+          <Group gap="sm" justify="flex-end">
             <Button variant="default" onClick={handleClose}>
               Cancel
             </Button>
