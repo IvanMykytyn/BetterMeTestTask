@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@theme {
+  /* Nav/sidebar semantic colors – reference Mantine theme */
+  --color-nav-text: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+  --color-nav-text-hover: light-dark(var(--mantine-color-black), var(--mantine-color-white));
+  --color-nav-bg-hover: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+  --color-nav-icon: light-dark(var(--mantine-color-gray-6), var(--mantine-color-dark-2));
+  --color-nav-active: var(--mantine-color-blue-light);
+  --color-nav-active-text: var(--mantine-color-blue-light-color);
+  --color-sidebar-border: light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-4));
+  --color-sidebar-bg: var(--mantine-color-body);
+}

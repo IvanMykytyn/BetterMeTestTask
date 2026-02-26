@@ -1,5 +1,3 @@
-"use client";
-
 import { Center, Pagination } from "@mantine/core";
 
 interface Props {
