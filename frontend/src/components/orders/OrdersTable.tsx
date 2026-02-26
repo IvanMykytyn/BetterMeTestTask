@@ -12,6 +12,14 @@ export default function OrdersTable({ orders }: Props) {
   const [sortBy, setSortBy] = useState<keyof Order | null>(null);
   const [reversed, setReversed] = useState(false);
 
+  const formatCurrency = (value: number) =>
+    new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(value);
+
+  const formatRate = (value: number) => value.toFixed(5);
+
   const sorted = [...orders].sort((a, b) => {
     if (!sortBy) return 0;
 
@@ -39,8 +47,30 @@ export default function OrdersTable({ orders }: Props) {
         <Table.Tr>
           <Table.Th onClick={() => handleSort("id")}>ID</Table.Th>
           <Table.Th onClick={() => handleSort("city")}>City</Table.Th>
+
           <Table.Th onClick={() => handleSort("subtotal")}>Subtotal</Table.Th>
+
+          <Table.Th onClick={() => handleSort("tax_amount")}>Tax</Table.Th>
+
           <Table.Th onClick={() => handleSort("total_amount")}>Total</Table.Th>
+
+          <Table.Th onClick={() => handleSort("composite_tax_rate")}>
+            Composite Rate
+          </Table.Th>
+
+          <Table.Th onClick={() => handleSort("state_rate")}>
+            State Rate
+          </Table.Th>
+
+          <Table.Th onClick={() => handleSort("county_rate")}>
+            County Rate
+          </Table.Th>
+
+          <Table.Th onClick={() => handleSort("city_rate")}>City Rate</Table.Th>
+
+          <Table.Th onClick={() => handleSort("special_rates")}>
+            Special Rate
+          </Table.Th>
         </Table.Tr>
       </Table.Thead>
 
@@ -49,8 +79,16 @@ export default function OrdersTable({ orders }: Props) {
           <Table.Tr key={order.id}>
             <Table.Td>{order.id}</Table.Td>
             <Table.Td>{order.city}</Table.Td>
-            <Table.Td>${order.subtotal.toFixed(2)}</Table.Td>
-            <Table.Td>${order.total_amount.toFixed(2)}</Table.Td>
+
+            <Table.Td>{formatCurrency(order.subtotal)}</Table.Td>
+            <Table.Td>{formatCurrency(order.tax_amount)}</Table.Td>
+            <Table.Td>{formatCurrency(order.total_amount)}</Table.Td>
+
+            <Table.Td>{formatRate(order.composite_tax_rate)}</Table.Td>
+            <Table.Td>{formatRate(order.state_rate)}</Table.Td>
+            <Table.Td>{formatRate(order.county_rate)}</Table.Td>
+            <Table.Td>{formatRate(order.city_rate)}</Table.Td>
+            <Table.Td>{formatRate(order.special_rates)}</Table.Td>
           </Table.Tr>
         ))}
       </Table.Tbody>
