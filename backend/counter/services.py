@@ -36,13 +36,13 @@ def process_orders_csv(file):
     orders_gdf = gpd.GeoDataFrame(df, geometry="geometry", crs="EPSG:4326")
 
     orders_with_county = gpd.sjoin(
-        orders_gdf, counties_gdf, how="left", predicate="within"
+        orders_gdf, counties_gdf, how="left", predicate="intersects"
     )
 
     orders_with_county = orders_with_county.drop(columns=["index_right"])
 
     orders_with_city = gpd.sjoin(
-        orders_with_county, cities_gdf, how="left", predicate="within"
+        orders_with_county, cities_gdf, how="left", predicate="intersects"
     )
 
     for _, row in orders_with_city.iterrows():

@@ -1,6 +1,8 @@
 from django.urls import path
-from .views import upload_orders
+import views
 
 urlpatterns = [
-    path("upload/", upload_orders, name="upload_orders"),
+    path('orders/import', views.import_orders_api, name='orders_import'),
+    path('orders', views.create_order_api, name='create_order_api'),
+    path('orders/list', views.list_orders_api, name='list_orders_api'),
 ]
