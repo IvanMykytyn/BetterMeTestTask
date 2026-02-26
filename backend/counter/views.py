@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-# from django.utils import timezone
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 from datetime import timezone as dt_timezone
 from django.views.decorators.csrf import csrf_exempt
 
@@ -39,9 +40,24 @@ def create_order_api(request):
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
+    
+    timestamp_str = data.get("timestamp")
+    if timestamp_str:
+        parsed_ts = parse_datetime(timestamp_str)
+        if parsed_ts is None:
+            purchase_date = timezone.now()
+        else:
+            if timezone.is_naive(parsed_ts):
+                purchase_date = timezone.make_aware(
+                    parsed_ts, timezone.get_default_timezone()
+                )
+            else:
+                purchase_date = parsed_ts
+    else:
+        purchase_date = timezone.now()
 
     order = OrderTaxRecord.objects.create(
-        purchase_date=data.get("timestamp", timezone.now()),
+        purchase_date=purchase_date,
         latitude=data.get("latitude", 0),
         longitude=data.get("longitude", 0),
         subtotal=Decimal(str(data.get("subtotal", 0))),
@@ -56,7 +72,10 @@ def create_order_api(request):
 
     return JsonResponse({
         "id": order.id,
-        "timestamp": order.purchase_date.astimezone(timezone.utc).replace(microsecond=0).isoformat() + "Z"
+        "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
+        .replace(microsecond=0)
+        .isoformat()
+        .replace("+00:00", "Z"),
     })
 
 
