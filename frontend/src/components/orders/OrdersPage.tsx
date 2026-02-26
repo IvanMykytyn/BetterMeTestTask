@@ -12,9 +12,6 @@ export default function OrdersPage() {
 
   const { data, isLoading } = useOrders({ search, page });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (!data) return null;
-
   return (
     <>
       <OrdersToolbar
@@ -25,13 +22,18 @@ export default function OrdersPage() {
         }}
       />
 
-      <OrdersTable orders={data.data} />
-
-      <OrdersPagination
-        page={page}
-        totalPages={data.totalPages}
-        onChange={setPage}
-      />
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          <OrdersTable orders={data?.data ?? []} />
+          <OrdersPagination
+            page={page}
+            totalPages={data?.totalPages ?? 1}
+            onChange={setPage}
+          />
+        </>
+      )}
     </>
   );
 }
