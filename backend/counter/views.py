@@ -56,6 +56,21 @@ def create_order_api(request):
     else:
         purchase_date = timezone.now()
 
+    timestamp_str = data.get("timestamp")
+    if timestamp_str:
+        parsed_ts = parse_datetime(timestamp_str)
+        if parsed_ts is None:
+            purchase_date = timezone.now()
+        else:
+            if timezone.is_naive(parsed_ts):
+                purchase_date = timezone.make_aware(
+                    parsed_ts, timezone.get_default_timezone()
+                )
+            else:
+                purchase_date = parsed_ts
+    else:
+        purchase_date = timezone.now()
+
     order = OrderTaxRecord.objects.create(
         purchase_date=purchase_date,
         latitude=data.get("latitude", 0),

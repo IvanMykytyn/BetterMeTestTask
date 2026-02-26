@@ -14,7 +14,6 @@ from .models import (
 )
 
 
-
 def process_orders_csv(file):
 
     start_time = time.time()
@@ -58,7 +57,8 @@ def process_orders_csv(file):
             city = None
 
         state_rate_obj = StateTaxRate.objects.filter(state_name=state).first()
-        county_rate_obj = CountyTaxRate.objects.filter(county_name=county).first()
+        county_rate_obj = CountyTaxRate.objects.filter(
+            county_name=county).first()
         city_rate_obj = CityTaxRate.objects.filter(city_name=city).first()
         special_rate_obj = SpecialTaxRate.objects.filter(
             city_or_county_name__in=[city, county]
