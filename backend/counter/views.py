@@ -3,7 +3,8 @@ from decimal import Decimal
 
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from django.utils import timezone
+# from django.utils import timezone
+from datetime import timezone as dt_timezone
 from django.views.decorators.csrf import csrf_exempt
 
 from .services import process_orders_csv
@@ -87,7 +88,7 @@ def list_orders_api(request):
             "composite_tax_rate": float(order.composite_tax_rate),
             "tax_amount": float(order.tax_amount),
             "total_amount": float(order.total_amount),
-            "timestamp": order.purchase_date.astimezone(timezone.utc).replace(microsecond=0).isoformat() + "Z",
+            "timestamp": order.purchase_date.astimezone(dt_timezone.utc).replace(microsecond=0).isoformat().replace('+00:00', 'Z'),
             "state_rate": float(order.state_rate),
             "county_rate": float(order.county_rate),
             "city_rate": float(order.city_rate),
