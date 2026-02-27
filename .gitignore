@@ -4,9 +4,3 @@
 venv/
 __pycache__/
 db.sqlite3
-backend/shapefiles/
-*.shp
-*.shx
-*.dbf
-*.prj
-*.cpg
