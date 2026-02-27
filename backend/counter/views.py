@@ -8,7 +8,6 @@ from django.utils.dateparse import parse_datetime
 from datetime import timezone as dt_timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from .services import process_orders_csv, validate_csv
 from .services import process_orders_csv, validate_csv, process_manual_order
 from .models import OrderTaxRecord
 
@@ -24,7 +23,7 @@ def import_orders_api(request):
     file = request.FILES.get("orders_file")
     if not file:
         return JsonResponse({"error": "No file uploaded"}, status=400)
-    
+
     # 1. Проверка CSV
     errors = validate_csv(file)
     if errors:
@@ -34,7 +33,6 @@ def import_orders_api(request):
     # 2. Если ошибок нет — обрабатываем файл
     process_orders_csv(file)
     return JsonResponse({"message": "Orders imported successfully!"})
-
 
 
 # ------------------------------
@@ -49,13 +47,13 @@ def create_order_api(request):
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
-    
+
     # process_manual_order внутри сам создаёт объект и сохраняет
     order = process_manual_order(data)
 
     return JsonResponse({
         "id": order.id,
-        "timestamp": order.purchase_date.astimezone(timezone.utc)
+        "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
         .replace(microsecond=0)
         .isoformat()
         .replace("+00:00", "Z"),
@@ -96,13 +94,11 @@ def list_orders_api(request):
             field = "subtotal" if "subtotal" in name else "total_amount"
             orders_qs = orders_qs.filter(**{f"{field}__{expr}": val})
 
-
     # Фильтры по state/county/city
     for field in ["state", "county", "city"]:
         value = request.GET.get(field)
         if value:
             orders_qs = orders_qs.filter(**{f"{field}_name__iexact": value})
-
 
     # Пагинация
     page_number = request.GET.get("page", 1)
@@ -119,10 +115,10 @@ def list_orders_api(request):
             "composite_tax_rate": float(order.composite_tax_rate),
             "tax_amount": float(order.tax_amount),
             "total_amount": float(order.total_amount),
-            "timestamp": order.purchase_date.astimezone(timezone.utc)
-                .replace(microsecond=0)
-                .isoformat()
-                .replace("+00:00", "Z"),
+            "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
+            .replace(microsecond=0)
+            .isoformat()
+            .replace("+00:00", "Z"),
             "state_rate": float(order.state_rate),
             "county_rate": float(order.county_rate),
             "city_rate": float(order.city_rate),
