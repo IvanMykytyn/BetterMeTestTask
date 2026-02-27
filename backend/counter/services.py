@@ -48,7 +48,7 @@ def validate_csv(file):
         if not pd.api.types.is_numeric_dtype(df[col]):
             return [f'Column "latitude", "longitude", "subtotal" must contain only numbers']
     # Если ошибок нет
-    return [] 
+    return []
 
 
 # -------------------------
@@ -57,25 +57,22 @@ def validate_csv(file):
 def find_county(lat, lon):
     point = Point(lon, lat)  # shapely использует (x, y) = (lon, lat)
     # сначала ищем кандидатов через STRtree
-    candidates = COUNTIES_TREE.query(point)
-    for polygon in candidates:
+    indices = COUNTIES_TREE.query(point)  # Shapely 2.x возвращает индексы
+    for idx in indices:
+        polygon = COUNTIES[idx]["polygon"]
         if polygon.contains(point):
-            # находим имя по совпадению
-            for c in COUNTIES:
-                if c["polygon"] == polygon:
-                    return c["name"]
+            return COUNTIES[idx]["name"]
     return None
+
 
 def find_city(lat, lon):
     point = Point(lon, lat)
-    candidates = CITIES_TREE.query(point)
-    for polygon in candidates:
+    indices = CITIES_TREE.query(point)
+    for idx in indices:
+        polygon = CITIES[idx]["polygon"]
         if polygon.contains(point):
-            for c in CITIES:
-                if c["polygon"] == polygon:
-                    return c["name"]
+            return CITIES[idx]["name"]
     return None
-
 
 
 # -------------------------
@@ -119,9 +116,11 @@ def process_orders_csv(file):
 
     # Загружаем ставки из БД один раз
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
-    county_rates = {c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
+    county_rates = {
+        c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
     city_rates = {c.city_name: c.city_rate for c in CityTaxRate.objects.all()}
-    special_rates = {s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
+    special_rates = {
+        s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
 
     # Создаём объекты для bulk_create
     orders_to_create = [
@@ -154,9 +153,11 @@ def process_manual_order(data):
     timestamp = pd.to_datetime(data["timestamp"])
     # Один раз читаем ставки
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
-    county_rates = {c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
+    county_rates = {
+        c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
     city_rates = {c.city_name: c.city_rate for c in CityTaxRate.objects.all()}
-    special_rates = {s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
+    special_rates = {
+        s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
 
     obj = create_order_object(
         timestamp=timestamp,
@@ -169,3 +170,4 @@ def process_manual_order(data):
         special_rates=special_rates,
     )
     obj.save()
+    return obj
