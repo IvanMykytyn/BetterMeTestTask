@@ -2,6 +2,7 @@ import json
 from decimal import Decimal, InvalidOperation
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import JsonResponse
 from django.utils import timezone
 from django.utils.dateparse import parse_datetime
@@ -99,6 +100,15 @@ def list_orders_api(request):
         value = request.GET.get(field)
         if value:
             orders_qs = orders_qs.filter(**{f"{field}_name__iexact": value})
+
+    # Універсальний search-фільтр
+    search = request.GET.get("search")
+    if search:
+        orders_qs = orders_qs.filter(
+            Q(state_name__icontains=search) |
+            Q(county_name__icontains=search) |
+            Q(city_name__icontains=search)
+        )
 
     # Пагинация
     page_number = request.GET.get("page", 1)
