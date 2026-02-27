@@ -1,5 +1,6 @@
-import { useState } from "react";
-import { useOrders, PAGE_SIZE_OPTIONS } from "@/hooks/useOrders";
+import { useState, useCallback } from "react";
+import { useQueryParams } from "use-query-params";
+import { useOrders, PAGE_SIZE_OPTIONS, type OrdersFilters } from "@/hooks/useOrders";
 import { useCreateOrder } from "@/hooks/useCreateOrder";
 import OrdersTable from "./OrdersTable";
 import {
@@ -11,24 +12,106 @@ import {
   Text,
   Title,
   Pagination,
+  ActionIcon,
+  Tooltip,
 } from "@mantine/core";
 import { Button } from "../shared/Button";
 import { CreateOrderModal } from "./modals/CreateOrderModal";
 import { ImportOrdersModal } from "./modals/ImportOrdersModal";
-import { IconSearch } from "@tabler/icons-react";
+import { IconSearch, IconFilter } from "@tabler/icons-react";
+import { OrdersFiltersSection } from "./OrdersFiltersSection";
+import {
+  EMPTY_FILTERS_DRAFT,
+  draftToApplied,
+  appliedToDraft,
+} from "@/utils/ordersFilters";
+import {
+  ORDERS_QUERY_PARAMS,
+  queryParamsToFilters,
+  type OrdersQueryParams,
+} from "@/constants/ordersQueryParams";
+
+const FILTER_KEYS = [
+  "fromTimestamp",
+  "toTimestamp",
+  "minSubtotal",
+  "maxSubtotal",
+  "minTotal",
+  "maxTotal",
+  "state",
+  "county",
+  "city",
+] as const;
 
 export default function OrdersPage() {
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [query, setQuery] = useQueryParams(ORDERS_QUERY_PARAMS);
+  const search = query.search ?? "";
+  const page = query.page ?? 1;
+  const pageSize = query.pageSize ?? 10;
+
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+  const [filtersDraft, setFiltersDraft] = useState(EMPTY_FILTERS_DRAFT);
 
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-
   const [isImportOpen, setIsImportOpen] = useState(false);
-  const { data, isFetching, isError, error, refetch } = useOrders({ search, page, pageSize });
+
+  const appliedFilters = queryParamsToFilters(query);
+  const hasFilters = Object.keys(appliedFilters).length > 0;
+
+  const { data, isFetching, isError, error, refetch } = useOrders({
+    search,
+    page,
+    pageSize,
+    filters: hasFilters ? appliedFilters : undefined,
+  });
+
+  const handleApplyFilters = useCallback(() => {
+    const filters = draftToApplied(filtersDraft);
+    setQuery({
+      ...filters,
+      page: 1,
+    });
+  }, [filtersDraft, setQuery]);
+
+  const handleResetFilters = useCallback(() => {
+    const clear: Partial<OrdersQueryParams> = { page: 1 };
+    for (const key of FILTER_KEYS) {
+      clear[key] = undefined;
+    }
+    setQuery(clear);
+    setFiltersDraft(EMPTY_FILTERS_DRAFT);
+  }, [setQuery]);
+
+  const handleToggleFilters = useCallback(() => {
+    const willOpen = !isFiltersOpen;
+    if (willOpen && hasFilters) {
+      setFiltersDraft(appliedToDraft(appliedFilters));
+    }
+    setIsFiltersOpen(willOpen);
+  }, [isFiltersOpen, hasFilters, appliedFilters]);
+
+  const handleRemoveFilter = useCallback(
+    (key: keyof OrdersFilters) => {
+      setQuery({ [key]: undefined, page: 1 });
+      setFiltersDraft((prev) => {
+        const next = { ...prev };
+        if (key === "fromTimestamp") next.fromDate = null;
+        else if (key === "toTimestamp") next.toDate = null;
+        else if (key === "minSubtotal") next.minSubtotal = "";
+        else if (key === "maxSubtotal") next.maxSubtotal = "";
+        else if (key === "minTotal") next.minTotal = "";
+        else if (key === "maxTotal") next.maxTotal = "";
+        else if (key === "state") next.state = "";
+        else if (key === "county") next.county = "";
+        else if (key === "city") next.city = "";
+        return next;
+      });
+    },
+    [setQuery]
+  );
+
   const createOrder = useCreateOrder();
   const totalPages = data?.totalPages ?? 0;
-
 
   return (
     <div className="mt-2">
@@ -37,16 +120,27 @@ export default function OrdersPage() {
       </div>
 
       <div className="flex justify-between items-center gap-4 mb-4">
-        <TextInput
-          placeholder="Search by city..."
-          leftSection={<IconSearch size={16} />}
-          value={search}
-          onChange={(e) => {
-            setSearch(e.currentTarget.value);
-            setPage(1);
-          }}
-          w={250}
-        />
+        <div className="flex items-center gap-2">
+          <TextInput
+            placeholder="Search by city..."
+            leftSection={<IconSearch size={16} />}
+            value={search}
+            onChange={(e) => {
+              setQuery({ search: e.currentTarget.value, page: 1 });
+            }}
+            w={250}
+          />
+          <Tooltip label={isFiltersOpen ? "Hide filters" : "Show filters"}>
+            <ActionIcon
+              variant={isFiltersOpen ? "filled" : "light"}
+              size="lg"
+              onClick={handleToggleFilters}
+              aria-label="Toggle filters"
+            >
+              <IconFilter size={18} />
+            </ActionIcon>
+          </Tooltip>
+        </div>
         <div className="flex items-center gap-2">
           <Button variant="light" onClick={() => setIsImportOpen(true)}>
             Import CSV
@@ -65,6 +159,16 @@ export default function OrdersPage() {
 
       <ImportOrdersModal opened={isImportOpen} onClose={() => setIsImportOpen(false)} />
 
+      <OrdersFiltersSection
+        opened={isFiltersOpen}
+        draft={filtersDraft}
+        onDraftChange={setFiltersDraft}
+        applied={appliedFilters}
+        onApply={handleApplyFilters}
+        onReset={handleResetFilters}
+        onRemoveFilter={handleRemoveFilter}
+      />
+
       {isError ? (
         <Alert color="red" title="Failed to load orders" variant="light">
           <Text size="sm" mb="sm">
@@ -79,14 +183,19 @@ export default function OrdersPage() {
           <LoadingOverlay visible={isFetching} zIndex={1000} />
           <OrdersTable orders={data?.data ?? []} />
           <div className="flex justify-between items-center gap-4 px-2 mt-4">
-            {totalPages > 1 && <Pagination total={totalPages} value={page} onChange={setPage} />}
+            {totalPages > 1 && (
+              <Pagination
+                total={totalPages}
+                value={page}
+                onChange={(p) => setQuery({ page: p })}
+              />
+            )}
             <Select
               label=""
               value={String(pageSize)}
               onChange={(value) => {
                 const size = value ? Number(value) : 10;
-                setPageSize(size);
-                setPage(1);
+                setQuery({ pageSize: size, page: 1 });
               }}
               data={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
               w={80}

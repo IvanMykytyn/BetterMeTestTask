@@ -6,6 +6,9 @@ import {
   Navigate,
   RouterProvider,
 } from "react-router-dom";
+import { QueryParamProvider } from "use-query-params";
+import { ReactRouter6Adapter } from "use-query-params/adapters/react-router-6";
+import queryString from "query-string";
 
 import { Layout } from "@/components/shared/Layout";
 import OrdersPage from "./components/orders/OrdersPage";
@@ -15,7 +18,17 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createBrowserRouter([
   {
     path: ROUTES.HOME,
-    element: <Layout />,
+    element: (
+      <QueryParamProvider
+        adapter={ReactRouter6Adapter}
+        options={{
+          searchStringToObject: queryString.parse,
+          objectToSearchString: queryString.stringify,
+        }}
+      >
+        <Layout />
+      </QueryParamProvider>
+    ),
     children: [
       { index: true, element: <Navigate to={ROUTES.ORDERS} replace /> },
       { path: "orders", element: <OrdersPage /> },
