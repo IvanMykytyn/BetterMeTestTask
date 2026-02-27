@@ -17,6 +17,8 @@
 import json
 from shapely.geometry import shape
 from shapely.strtree import STRtree
+from django.conf import settings
+from pathlib import Path
 
 COUNTIES = []
 CITIES = []
@@ -26,19 +28,21 @@ CITIES_TREE = None
 def load_geo_data():
     global COUNTIES, CITIES, COUNTIES_TREE, CITIES_TREE
 
-    with open("backend/data/us_counties.geojson") as f:
+    counties_file = Path(settings.BASE_DIR) / "data" / "ny_counties.geojson"
+    cities_file = Path(settings.BASE_DIR) / "data" / "ny_places.geojson"
+
+    with open(counties_file) as f:
         data = json.load(f)
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
-            name = feature["properties"]["name"]
+            name = feature["properties"]["NAME"]
             COUNTIES.append({"name": name, "polygon": polygon})
     COUNTIES_TREE = STRtree([c["polygon"] for c in COUNTIES])
 
-
-    with open("backend/data/ny_cities.geojson") as f:
+    with open(cities_file) as f:
         data = json.load(f)
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
-            name = feature["properties"]["name"]
+            name = feature["properties"]["NAMELSAD"]
             CITIES.append({"name": name, "polygon": polygon})
     CITIES_TREE = STRtree([c["polygon"] for c in CITIES])

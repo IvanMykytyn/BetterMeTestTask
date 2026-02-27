@@ -8,7 +8,6 @@ from django.utils.dateparse import parse_datetime
 from datetime import timezone as dt_timezone
 from django.views.decorators.csrf import csrf_exempt
 
-from .services import process_orders_csv, validate_csv
 from .services import process_orders_csv, validate_csv, process_manual_order
 from .models import OrderTaxRecord
 
