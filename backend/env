@@ -1,0 +1,13 @@
+SECRET_KEY=django-insecure-r%%x2uf%v!a92tl8*)f6@*rz*_kiuxzhofv+5m$c7fxvhfgbdg
+
+DEBUG=False
+
+ALLOWED_HOSTS=
+
+DATABASE_URL=
+
+CORS_ALLOWED_ORIGINS=https://betterme-frontend.onrender.com
+
+ADMIN_USERNAME=clodev
+
+ADMIN_PASSWORD=clodev
