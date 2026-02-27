@@ -122,9 +122,12 @@ def process_orders_csv(file):
     special_rates = {
         s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
 
-    # Создаём объекты для bulk_create
-    orders_to_create = [
-        create_order_object(
+    # Создаём объекты для bulk_create.
+    # Важно: вызываем calculate_totals() перед вставкой, так как bulk_create
+    # не вызывает save() и, соответственно, не пересчитывает суммы автоматически.
+    orders_to_create = []
+    for row in df.itertuples(index=False):
+        obj = create_order_object(
             timestamp=row.timestamp,
             lat=row.latitude,
             lon=row.longitude,
@@ -134,8 +137,8 @@ def process_orders_csv(file):
             city_rates=city_rates,
             special_rates=special_rates,
         )
-        for row in df.itertuples(index=False)
-    ]
+        obj.calculate_totals()
+        orders_to_create.append(obj)
 
     # Массовая вставка
     OrderTaxRecord.objects.bulk_create(orders_to_create)
