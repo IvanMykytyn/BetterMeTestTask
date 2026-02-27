@@ -65,7 +65,7 @@ function FooterLinkItem({
     <a
       href="#"
       title={collapsed ? item.label : undefined}
-      className={clsx(navLinkStyles, collapsed && "justify-center px-2")}
+      className={clsx(navLinkStyles, "opacity-50 cursor-not-allowed", collapsed && "justify-center px-2")}
       onClick={(e) => e.preventDefault()}
     >
       <Icon className={clsx(collapsed ? "" : "mr-2", navLinkIconStyles)} stroke={1.5} />
