@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQueryParams } from "use-query-params";
+import { useDebouncedValue } from "@mantine/hooks";
 import { useOrders, PAGE_SIZE_OPTIONS, type OrdersFilters } from "@/hooks/useOrders";
 import { useCreateOrder } from "@/hooks/useCreateOrder";
 import OrdersTable from "./OrdersTable";
@@ -7,9 +8,9 @@ import {
   Alert,
   Box,
   LoadingOverlay,
-  TextInput,
   Select,
   Text,
+  TextInput,
   Title,
   Pagination,
   ActionIcon,
@@ -18,13 +19,9 @@ import {
 import { Button } from "../shared/Button";
 import { CreateOrderModal } from "./modals/CreateOrderModal";
 import { ImportOrdersModal } from "./modals/ImportOrdersModal";
-import { IconSearch, IconFilter } from "@tabler/icons-react";
+import { IconFilter, IconSearch } from "@tabler/icons-react";
 import { OrdersFiltersSection } from "./OrdersFiltersSection";
-import {
-  EMPTY_FILTERS_DRAFT,
-  draftToApplied,
-  appliedToDraft,
-} from "@/utils/ordersFilters";
+import { EMPTY_FILTERS_DRAFT, draftToApplied, appliedToDraft } from "@/utils/ordersFilters";
 import {
   ORDERS_QUERY_PARAMS,
   queryParamsToFilters,
@@ -45,9 +42,16 @@ const FILTER_KEYS = [
 
 export default function OrdersPage() {
   const [query, setQuery] = useQueryParams(ORDERS_QUERY_PARAMS);
-  const search = query.search ?? "";
   const page = query.page ?? 1;
   const pageSize = query.pageSize ?? 10;
+  const search = query.search ?? "";
+
+  const [searchInput, setSearchInput] = useState(search);
+  const [debouncedSearch] = useDebouncedValue(searchInput, 300);
+  
+  useEffect(() => {
+    setQuery({ search: debouncedSearch, page: 1 });
+  }, [debouncedSearch, setQuery]);
 
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [filtersDraft, setFiltersDraft] = useState(EMPTY_FILTERS_DRAFT);
@@ -74,12 +78,13 @@ export default function OrdersPage() {
   }, [filtersDraft, setQuery]);
 
   const handleResetFilters = useCallback(() => {
-    const clear: Partial<OrdersQueryParams> = { page: 1 };
+    const clear: Partial<OrdersQueryParams> = { page: 1, search: undefined };
     for (const key of FILTER_KEYS) {
       clear[key] = undefined;
     }
     setQuery(clear);
     setFiltersDraft(EMPTY_FILTERS_DRAFT);
+    setSearchInput("");
   }, [setQuery]);
 
   const handleToggleFilters = useCallback(() => {
@@ -124,10 +129,8 @@ export default function OrdersPage() {
           <TextInput
             placeholder="Search by city..."
             leftSection={<IconSearch size={16} />}
-            value={search}
-            onChange={(e) => {
-              setQuery({ search: e.currentTarget.value, page: 1 });
-            }}
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.currentTarget.value)}
             w={250}
           />
           <Tooltip label={isFiltersOpen ? "Hide filters" : "Show filters"}>
@@ -166,6 +169,7 @@ export default function OrdersPage() {
         applied={appliedFilters}
         onApply={handleApplyFilters}
         onReset={handleResetFilters}
+        onCollapse={() => setIsFiltersOpen(false)}
         onRemoveFilter={handleRemoveFilter}
       />
 
@@ -184,22 +188,24 @@ export default function OrdersPage() {
           <OrdersTable orders={data?.data ?? []} />
           <div className="flex justify-between items-center gap-4 px-2 mt-4">
             {totalPages > 1 && (
-              <Pagination
-                total={totalPages}
-                value={page}
-                onChange={(p) => setQuery({ page: p })}
-              />
+              <>
+                <Pagination
+                  total={totalPages}
+                  value={page}
+                  onChange={(p) => setQuery({ page: p })}
+                />
+                <Select
+                  label=""
+                  value={String(pageSize)}
+                  onChange={(value) => {
+                    const size = value ? Number(value) : 10;
+                    setQuery({ pageSize: size, page: 1 });
+                  }}
+                  data={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
+                  w={80}
+                />
+              </>
             )}
-            <Select
-              label=""
-              value={String(pageSize)}
-              onChange={(value) => {
-                const size = value ? Number(value) : 10;
-                setQuery({ pageSize: size, page: 1 });
-              }}
-              data={PAGE_SIZE_OPTIONS.map((n) => ({ value: String(n), label: String(n) }))}
-              w={80}
-            />
           </div>
         </Box>
       )}

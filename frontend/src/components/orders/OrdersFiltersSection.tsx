@@ -24,6 +24,7 @@ interface Props {
   applied: OrdersFilters;
   onApply: () => void;
   onReset: () => void;
+  onCollapse: () => void;
   onRemoveFilter: (key: keyof OrdersFilters) => void;
 }
 
@@ -34,14 +35,13 @@ export function OrdersFiltersSection({
   applied,
   onApply,
   onReset,
+  onCollapse,
   onRemoveFilter,
 }: Props) {
-  const appliedKeys = (Object.keys(applied) as (keyof OrdersFilters)[]).filter(
-    (k) => {
-      const v = applied[k];
-      return v != null && v !== "";
-    }
-  );
+  const appliedKeys = (Object.keys(applied) as (keyof OrdersFilters)[]).filter((k) => {
+    const v = applied[k];
+    return v != null && v !== "";
+  });
 
   const updateDraft = (updates: Partial<OrdersFiltersDraft>) => {
     onDraftChange({ ...draft, ...updates });
@@ -88,9 +88,9 @@ export function OrdersFiltersSection({
                 onChange={(date) =>
                   updateDraft({
                     fromDate: date
-                      ? ((date as unknown) instanceof Date
-                          ? (date as unknown as Date)
-                          : new Date(date))
+                      ? (date as unknown) instanceof Date
+                        ? (date as unknown as Date)
+                        : new Date(date)
                       : null,
                   })
                 }
@@ -103,9 +103,9 @@ export function OrdersFiltersSection({
                 onChange={(date) =>
                   updateDraft({
                     toDate: date
-                      ? ((date as unknown) instanceof Date
-                          ? (date as unknown as Date)
-                          : new Date(date))
+                      ? (date as unknown) instanceof Date
+                        ? (date as unknown as Date)
+                        : new Date(date)
                       : null,
                   })
                 }
@@ -167,10 +167,15 @@ export function OrdersFiltersSection({
               />
             </SimpleGrid>
 
-            <Group gap="sm">
-              <Button onClick={onApply}>Apply filters</Button>
-              <Button variant="default" onClick={onReset}>
-                Reset filters
+            <Group gap="sm" justify="space-between">
+              <Group gap="sm">
+                <Button onClick={onApply}>Apply</Button>
+                <Button variant="default" onClick={onReset}>
+                  Reset
+                </Button>
+              </Group>
+              <Button variant="outline" onClick={onCollapse}>
+                Close
               </Button>
             </Group>
           </Stack>
