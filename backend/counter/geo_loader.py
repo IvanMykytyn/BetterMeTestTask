@@ -26,19 +26,21 @@ CITIES_TREE = None
 def load_geo_data():
     global COUNTIES, CITIES, COUNTIES_TREE, CITIES_TREE
 
-    with open("backend/data/us_counties.geojson") as f:
+    # Load NY counties GeoJSON (stored in backend/data/ny_counties.geojson)
+    with open("data/ny_counties.geojson") as f:
         data = json.load(f)
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
-            name = feature["properties"]["name"]
+            name = feature["properties"]["NAME"]
             COUNTIES.append({"name": name, "polygon": polygon})
     COUNTIES_TREE = STRtree([c["polygon"] for c in COUNTIES])
 
 
-    with open("backend/data/ny_cities.geojson") as f:
+    # Load NY places (cities) GeoJSON (stored in backend/data/ny_places.geojson)
+    with open("data/ny_places.geojson") as f:
         data = json.load(f)
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
-            name = feature["properties"]["name"]
+            name = feature["properties"]["NAME"]
             CITIES.append({"name": name, "polygon": polygon})
     CITIES_TREE = STRtree([c["polygon"] for c in CITIES])

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
-from backend.counter.geo_loader import load_geo_data
+from .geo_loader import load_geo_data
 
 
 class CounterConfig(AppConfig):
