@@ -46,6 +46,7 @@ export function useOrders({ search, page, pageSize, filters }: UseOrdersParams) 
       const params: Record<string, string | number> = {
         page,
         page_size: pageSize,
+        search: search ?? undefined,
       };
 
       if (filters) {
