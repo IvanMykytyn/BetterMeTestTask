@@ -1,0 +1,498 @@
+[
+{
+  "model": "counter.countytaxrate",
+  "pk": 1,
+  "fields": {
+    "county_name": "Albany",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 2,
+  "fields": {
+    "county_name": "Allegany",
+    "county_rate": "0.04500"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 3,
+  "fields": {
+    "county_name": "Bronx",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 4,
+  "fields": {
+    "county_name": "Broome",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 5,
+  "fields": {
+    "county_name": "Cattaraugus",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 6,
+  "fields": {
+    "county_name": "Cayuga",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 7,
+  "fields": {
+    "county_name": "Chautauqua",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 8,
+  "fields": {
+    "county_name": "Chemun",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 9,
+  "fields": {
+    "county_name": "Chenango",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 10,
+  "fields": {
+    "county_name": "Clinton",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 11,
+  "fields": {
+    "county_name": "Columbia",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 12,
+  "fields": {
+    "county_name": "Cortland",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 13,
+  "fields": {
+    "county_name": "Delaware",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 14,
+  "fields": {
+    "county_name": "Dutchess",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 15,
+  "fields": {
+    "county_name": "Erie",
+    "county_rate": "0.04750"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 16,
+  "fields": {
+    "county_name": "Essex",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 17,
+  "fields": {
+    "county_name": "Franklin",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 18,
+  "fields": {
+    "county_name": "Fulton",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 19,
+  "fields": {
+    "county_name": "Genesee",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 20,
+  "fields": {
+    "county_name": "Greene",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 21,
+  "fields": {
+    "county_name": "Hamilton",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 22,
+  "fields": {
+    "county_name": "Herkimer",
+    "county_rate": "0.04250"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 23,
+  "fields": {
+    "county_name": "Jefferson",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 24,
+  "fields": {
+    "county_name": "Kings",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 25,
+  "fields": {
+    "county_name": "Lewis",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 26,
+  "fields": {
+    "county_name": "Livingston",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 27,
+  "fields": {
+    "county_name": "Madison",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 28,
+  "fields": {
+    "county_name": "Monroe",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 29,
+  "fields": {
+    "county_name": "Montgomery",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 30,
+  "fields": {
+    "county_name": "Nassau",
+    "county_rate": "0.04250"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 31,
+  "fields": {
+    "county_name": "New York",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 32,
+  "fields": {
+    "county_name": "Niagara",
+    "county_rate": "0.04750"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 33,
+  "fields": {
+    "county_name": "Oneida",
+    "county_rate": "0.04750"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 34,
+  "fields": {
+    "county_name": "Onondaga",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 35,
+  "fields": {
+    "county_name": "Ontario",
+    "county_rate": "0.03500"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 36,
+  "fields": {
+    "county_name": "Orange",
+    "county_rate": "0.03750"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 37,
+  "fields": {
+    "county_name": "Orleans",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 38,
+  "fields": {
+    "county_name": "Oswego",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 39,
+  "fields": {
+    "county_name": "Otsego",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 40,
+  "fields": {
+    "county_name": "Putnam",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 41,
+  "fields": {
+    "county_name": "Queens",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 42,
+  "fields": {
+    "county_name": "Rensselaer",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 43,
+  "fields": {
+    "county_name": "Richmond",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 44,
+  "fields": {
+    "county_name": "Rockland",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 45,
+  "fields": {
+    "county_name": "St. Lawrence",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 46,
+  "fields": {
+    "county_name": "Saratoga",
+    "county_rate": "0.03000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 47,
+  "fields": {
+    "county_name": "Schenectady",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 48,
+  "fields": {
+    "county_name": "Schoharie",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 49,
+  "fields": {
+    "county_name": "Schuyler",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 50,
+  "fields": {
+    "county_name": "Seneca",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 51,
+  "fields": {
+    "county_name": "Steuben",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 52,
+  "fields": {
+    "county_name": "Suffolk",
+    "county_rate": "0.04375"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 53,
+  "fields": {
+    "county_name": "Sullivan",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 54,
+  "fields": {
+    "county_name": "Tioga",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 55,
+  "fields": {
+    "county_name": "Tompkins",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 56,
+  "fields": {
+    "county_name": "Ulster",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 57,
+  "fields": {
+    "county_name": "Warren",
+    "county_rate": "0.03000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 58,
+  "fields": {
+    "county_name": "Washington",
+    "county_rate": "0.03000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 59,
+  "fields": {
+    "county_name": "Wayne",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 60,
+  "fields": {
+    "county_name": "Westchester",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 61,
+  "fields": {
+    "county_name": "Wyoming",
+    "county_rate": "0.04000"
+  }
+},
+{
+  "model": "counter.countytaxrate",
+  "pk": 62,
+  "fields": {
+    "county_name": "Yates",
+    "county_rate": "0.04000"
+  }
+}
+]

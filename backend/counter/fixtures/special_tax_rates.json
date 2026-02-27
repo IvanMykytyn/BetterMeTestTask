@@ -1,0 +1,164 @@
+[
+{
+  "model": "counter.specialtaxrate",
+  "pk": 1,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Mount Vernon",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 2,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "New Rochelle",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 3,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "White Plains",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 4,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Yonkers",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 5,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "New York",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 6,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Bronx",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 7,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Brooklyn",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 8,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Dutchess",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 9,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Kings",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 10,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Nassau",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 11,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Orange",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 12,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Putnam",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 13,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Queens",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 14,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Richmond",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 15,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Rockland",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 16,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Staten Island",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 17,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Suffolk",
+    "special_rate": "0.00375"
+  }
+},
+{
+  "model": "counter.specialtaxrate",
+  "pk": 18,
+  "fields": {
+    "special_county_name": "Metropolitan Commuter Transportation District",
+    "city_or_county_name": "Westchester",
+    "special_rate": "0.00375"
+  }
+}
+]

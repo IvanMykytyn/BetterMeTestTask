@@ -1,0 +1,18 @@
+[
+{
+  "model": "counter.citytaxrate",
+  "pk": 1,
+  "fields": {
+    "city_name": "Yonkers",
+    "city_rate": "0.00500"
+  }
+},
+{
+  "model": "counter.citytaxrate",
+  "pk": 2,
+  "fields": {
+    "city_name": "New York",
+    "city_rate": "0.00500"
+  }
+}
+]
