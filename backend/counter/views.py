@@ -55,8 +55,7 @@ def create_order_api(request):
         "id": order.id,
         "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
         .replace(microsecond=0)
-        .isoformat()
-        .replace("+00:00", "Z"),
+        .strftime("%Y-%m-%d %H:%M:%S"),
     })
 
 
@@ -117,8 +116,7 @@ def list_orders_api(request):
             "total_amount": float(order.total_amount),
             "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
             .replace(microsecond=0)
-            .isoformat()
-            .replace("+00:00", "Z"),
+            .strftime("%Y-%m-%d %H:%M:%S"),
             "state_rate": float(order.state_rate),
             "county_rate": float(order.county_rate),
             "city_rate": float(order.city_rate),

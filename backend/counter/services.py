@@ -111,8 +111,8 @@ def process_orders_csv(file):
     """
     # Читаем CSV в DataFrame
     df = pd.read_csv(file)
-    # конвертируем колонку timestamp в datetime
-    df["timestamp"] = pd.to_datetime(df["timestamp"])
+    # конвертируем колонку timestamp в datetime (UTC, с таймзоной)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
 
     # Загружаем ставки из БД один раз
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
@@ -149,8 +149,8 @@ def process_manual_order(data):
     Создает запись в OrderTaxRecord из данных формы.
     Предполагается, что данные валидные и не пустые.
     """
-    # Конвертируем timestamp в datetime
-    timestamp = pd.to_datetime(data["timestamp"])
+    # Конвертируем timestamp в datetime (UTC, с таймзоной)
+    timestamp = pd.to_datetime(data["timestamp"], utc=True)
     # Один раз читаем ставки
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
     county_rates = {
