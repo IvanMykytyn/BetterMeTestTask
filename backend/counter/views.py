@@ -31,6 +31,9 @@ def import_orders_api(request):
         # если есть ошибки — возвращаем их и не трогаем БД
         return JsonResponse({"errors": errors}, status=400)
 
+    # Перематываем файл в начало перед повторным чтением в process_orders_csv
+    file.seek(0)
+
     # 2. Если ошибок нет — обрабатываем файл
     process_orders_csv(file)
     return JsonResponse({"message": "Orders imported successfully!"})
