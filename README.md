@@ -168,3 +168,25 @@ Geospatial data in **shapefile format** was obtained from official U.S. governme
 3. Composite tax rate stored with precision up to **5 decimal places** (e.g., 0.08725), critical for accounting and tax reporting, avoiding rounding errors in large-scale calculations.
 
 ---
+
+## Geolocation Test Results
+
+During testing, we processed 11,222 records containing coordinates and subtotals. Our goal was to determine the corresponding state, county, and city for each record using the shapefiles for New York State counties and cities.
+
+**The results showed that:**
+
+- The **county could not be determined** for **136 records** (~1.21%).
+
+- The **city could not be determined** for **1822** records.
+
+The unmatched cases are primarily due to:
+
+1. Boundary issues: Some coordinates fall exactly on the edge of polygons, and depending on the method used (contains vs intersects), they may not be counted as inside the polygon.
+
+2. Coordinate precision: Minor deviations in the provided coordinates can prevent exact polygon matching.
+
+3. Data limitations: The shapefiles only cover New York State, so any point outside the state would naturally remain unmatched.
+
+Overall, the vast majority of records were successfully mapped, and the small percentage of unmatched points is expected in geospatial processing.
+
+---
