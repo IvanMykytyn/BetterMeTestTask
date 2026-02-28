@@ -19,6 +19,7 @@ def load_geo_data():
 
     with open(counties_file) as f:
         data = json.load(f)
+        print("Counties CRS field:", data.get("crs"))
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
             name = feature["properties"]["NAME"]
@@ -28,6 +29,7 @@ def load_geo_data():
     # Load NY places (cities) GeoJSON (stored in backend/data/ny_places.geojson)
     with open(cities_file) as f:
         data = json.load(f)
+        print("Cities CRS field:", data.get("crs"))
         for feature in data["features"]:
             polygon = shape(feature["geometry"])
             # choose the property that actually exists in your GeoJSON:

@@ -10,57 +10,51 @@ from .models import (
     CityTaxRate,
     SpecialTaxRate,
 )
-# from .geo_loader import cities_gdf, counties_gdf - це намвже не потрібно,
-# бо ми вже завантажили дані в пам'ять у вигляді списків і STRtree для швидкого пошуку, а не працюємо з GeoDataFrame напряму.
 
 
-# -------------------------
 # CSV Validation
-# -------------------------
 def validate_csv(file):
     """
-    Быстрая проверка CSV файла:
-    - все нужные колонки есть
-    - даты в колонке 'timestamp' в формате ISO 8601
-    - subtotal, latitude, longitude не пустые и числовые
+     Quick check of CSV file:
+    - all necessary fields are there
+    - dates in the 'timestamp' column in ISO 8601 format
+    - subtotal, latitude, longitude are not empty and numeric
     """
     required_columns = ["timestamp", "latitude", "longitude", "subtotal"]
-    # Попытка прочитать CSV
+    # Attempt to read CSV
     try:
         df = pd.read_csv(file)
     except Exception as e:
         return [f"Cannot read CSV: {e}"]
-    # Проверка обязательных колонок
+    # Checking the mandatory columns
     missing_cols = [col for col in required_columns if col not in df.columns]
     if missing_cols:
         return [f"Missing required columns: {', '.join(missing_cols)}"]
-    # Проверка на пустые значения
+    # Check for empty values
     if df[required_columns].isna().any().any():
         return ["CSV contains empty values in required columns"]
-    # Проверка формата даты
+    # Checking the date format
     try:
-        # допускаем микросекунды, но ошибки будут пойманы
+        # Allow microseconds, but errors will be caught
         pd.to_datetime(df["timestamp"], errors="raise", utc=True)
     except Exception:
         return ["CSV contains invalid timestamps in 'timestamp' column"]
-    # Проверка типов данных для чисел
+    # Checking data types for numbers
     for col in ["latitude", "longitude", "subtotal"]:
         if not pd.api.types.is_numeric_dtype(df[col]):
             return [f'Column "latitude", "longitude", "subtotal" must contain only numbers']
-    # Если ошибок нет
+    # If there are no errors, return an empty list
     return []
 
 
-# -------------------------
-# Гео функции для поиска округа и города по точке:
-# -------------------------
+# Geo functions for searching the county and city by point:
 def find_county(lat, lon):
-    point = Point(lon, lat)  # shapely использует (x, y) = (lon, lat)
-    # сначала ищем кандидатов через STRtree
-    indices = COUNTIES_TREE.query(point)  # Shapely 2.x возвращает индексы
+    point = Point(lon, lat)  # Shapely uses (x, y) = (lon, lat)
+    # First, we are looking for candidates through STRtree
+    indices = COUNTIES_TREE.query(point)  # Shapely 2.x returns indexes
     for idx in indices:
         polygon = COUNTIES[idx]["polygon"]
-        if polygon.contains(point):
+        if polygon.covers(point):
             return COUNTIES[idx]["name"]
     return None
 
@@ -70,20 +64,17 @@ def find_city(lat, lon):
     indices = CITIES_TREE.query(point)
     for idx in indices:
         polygon = CITIES[idx]["polygon"]
-        if polygon.contains(point):
+        if polygon.covers(point):
             return CITIES[idx]["name"]
     return None
 
 
-# -------------------------
-# Создание объекта OrderTaxRecord (без сохранения)
-# -------------------------
+# Creating an OrderTaxRecord object (without saving)
 def create_order_object(timestamp, lat, lon, subtotal,
                         state_rate, county_rates, city_rates, special_rates):
     county = find_county(lat, lon)
     city = find_city(lat, lon)
     state = "NY"
-
     return OrderTaxRecord(
         purchase_date=timestamp,
         latitude=lat,
@@ -99,32 +90,28 @@ def create_order_object(timestamp, lat, lon, subtotal,
     )
 
 
-# -------------------------
-# Массовая обработка CSV
-# -------------------------
+# Bulk processing of CSV
 def process_orders_csv(file):
     """
-    Читает CSV и создает записи в OrderTaxRecord.
-    Подходит для больших файлов (11k+ точек).
-    Ожидается, что CSV файл уже прошел валидацию через validate_csv()
-    Для массовой загрузки делаем bulk_create для оптимизации
+    Reads CSV and creates records in OrderTaxRecord.
+    Suitable for large files (11k+ points).
+    It is expected that the CSV file has already been validated via validate_csv()
+    For mass loading, we do bulk_create for optimization.
     """
-    # Читаем CSV в DataFrame
+    # Reading CSV into a DataFrame
     df = pd.read_csv(file)
-    # конвертируем колонку timestamp в datetime (UTC, с таймзоной)
+    # Convert the timestamp column to datetime (UTC, with timezone)
     df["timestamp"] = pd.to_datetime(df["timestamp"], utc=True)
-
-    # Загружаем ставки из БД один раз
+    # Loading tax rates from the database once
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
     county_rates = {
         c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
     city_rates = {c.city_name: c.city_rate for c in CityTaxRate.objects.all()}
     special_rates = {
         s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
-
-    # Создаём объекты для bulk_create.
-    # Важно: вызываем calculate_totals() перед вставкой, так как bulk_create
-    # не вызывает save() и, соответственно, не пересчитывает суммы автоматически.
+    # Create objects for bulk_create.
+    # Important: call calculate_totals() before inserting, as bulk_create
+    # does not call save() and, accordingly, does not recalculate the sums automatically.
     orders_to_create = []
     for row in df.itertuples(index=False):
         obj = create_order_object(
@@ -139,29 +126,25 @@ def process_orders_csv(file):
         )
         obj.calculate_totals()
         orders_to_create.append(obj)
-
-    # Массовая вставка
+    # Mass insertion
     OrderTaxRecord.objects.bulk_create(orders_to_create)
 
 
-# -------------------------
-# Ручной ввод
-# -------------------------
+# Manual input
 def process_manual_order(data):
     """
-    Создает запись в OrderTaxRecord из данных формы.
-    Предполагается, что данные валидные и не пустые.
+    Creates a record in OrderTaxRecord from form data.
+    It is assumed that the data is valid and not empty.
     """
-    # Конвертируем timestamp в datetime (UTC, с таймзоной)
+    # Convert timestamp to datetime (UTC, with timezone)
     timestamp = pd.to_datetime(data["timestamp"], utc=True)
-    # Один раз читаем ставки
+    # We read the rates once
     state_rate = StateTaxRate.objects.get(state_name="NY").state_rate
     county_rates = {
         c.county_name: c.county_rate for c in CountyTaxRate.objects.all()}
     city_rates = {c.city_name: c.city_rate for c in CityTaxRate.objects.all()}
     special_rates = {
         s.city_or_county_name: s.special_rate for s in SpecialTaxRate.objects.all()}
-
     obj = create_order_object(
         timestamp=timestamp,
         lat=data["latitude"],
