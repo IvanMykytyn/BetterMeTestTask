@@ -13,48 +13,37 @@ from .services import process_orders_csv, validate_csv, process_manual_order
 from .models import OrderTaxRecord
 
 
-# ------------------------------
 # POST /orders/import
-# ------------------------------
 @csrf_exempt
 def import_orders_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Method not allowed"}, status=405)
-
     file = request.FILES.get("orders_file")
     if not file:
         return JsonResponse({"error": "No file uploaded"}, status=400)
-
-    # 1. Проверка CSV
+    # CSV validation
     errors = validate_csv(file)
     if errors:
-        # если есть ошибки — возвращаем их и не трогаем БД
+        # If there are errors, we return them and do not touch the database
         return JsonResponse({"errors": errors}, status=400)
-
-    # Перематываем файл в начало перед повторным чтением в process_orders_csv
+    # We rewind the file to the beginning before re-reading it in process_orders_csv
     file.seek(0)
-
-    # 2. Если ошибок нет — обрабатываем файл
+    # If there are no errors, we process the file
     process_orders_csv(file)
     return JsonResponse({"message": "Orders imported successfully!"})
 
 
-# ------------------------------
-# POST /orders (ручной ввод)
-# ------------------------------
+# POST /orders (manual input)
 @csrf_exempt
 def create_order_api(request):
     if request.method != "POST":
         return JsonResponse({"error": "Method not allowed"}, status=405)
-
     try:
         data = json.loads(request.body)
     except json.JSONDecodeError:
         return JsonResponse({"error": "Invalid JSON"}, status=400)
-
-    # process_manual_order внутри сам создаёт объект и сохраняет
+    # Process_manual_order creates the object itself and saves it
     order = process_manual_order(data)
-
     return JsonResponse({
         "id": order.id,
         "timestamp": order.purchase_date.astimezone(dt_timezone.utc)
@@ -63,13 +52,10 @@ def create_order_api(request):
     })
 
 
-# ------------------------------
-# GET /orders (список с фильтрами и пагинацией)
-# ------------------------------
+# GET /orders (list with filters and pagination)
 def list_orders_api(request):
     orders_qs = OrderTaxRecord.objects.all().order_by("-purchase_date")
-
-    # Фильтры по времени
+    # Filters by time
     for param, field in [("from_timestamp", "gte"), ("to_timestamp", "lte")]:
         ts_str = request.GET.get(param)
         if ts_str:
@@ -79,8 +65,7 @@ def list_orders_api(request):
             if dt:
                 filter_expr = {f"purchase_date__{field}": dt}
                 orders_qs = orders_qs.filter(**filter_expr)
-
-     # Фильтры по суммам
+     #Filters by amounts
     def parse_decimal(name):
         raw = request.GET.get(name)
         if raw is None:
@@ -97,13 +82,13 @@ def list_orders_api(request):
             field = "subtotal" if "subtotal" in name else "total_amount"
             orders_qs = orders_qs.filter(**{f"{field}__{expr}": val})
 
-    # Фильтры по state/county/city
+    # Filters by state/county/city
     for field in ["state", "county", "city"]:
         value = request.GET.get(field)
         if value:
             orders_qs = orders_qs.filter(**{f"{field}_name__iexact": value})
 
-    # Універсальний search-фільтр
+    # Universal search filter
     search = request.GET.get("search")
     if search:
         orders_qs = orders_qs.filter(
@@ -112,7 +97,7 @@ def list_orders_api(request):
             Q(city_name__icontains=search)
         )
 
-    # Пагинация
+    # Pagination
     page_number = request.GET.get("page", 1)
     page_size = request.GET.get("page_size", 20)
     paginator = Paginator(orders_qs, page_size)

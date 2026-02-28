@@ -2,13 +2,13 @@ from decimal import Decimal
 from django.db import models
 
 class OrderTaxRecord(models.Model):
-    # вихіні дані
+    # Output data
     purchase_date = models.DateTimeField()
     latitude = models.FloatField()
     longitude = models.FloatField()
     subtotal = models.DecimalField(max_digits=12, decimal_places=2)
 
-    # розрахункові ставки
+    # Settlement rates
     composite_tax_rate = models.DecimalField(max_digits=7, decimal_places=5, default=0)
 
     state_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0)
@@ -16,11 +16,11 @@ class OrderTaxRecord(models.Model):
     city_rate = models.DecimalField(max_digits=6, decimal_places=5, default=0)
     special_rates = models.DecimalField(max_digits=6, decimal_places=5, default=0)
 
-    # розрахункові суми
+    # Settlement amounts
     tax_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
-    # юрисдикції
+    # Jurisdictions
     state_name = models.CharField(max_length=100)
     county_name = models.CharField(max_length=100, blank=True, null=True)
     city_name = models.CharField(max_length=100, blank=True, null=True)
@@ -30,6 +30,7 @@ class OrderTaxRecord(models.Model):
     def __str__(self):
         return f"{self.purchase_date} - {self.total_amount}"
     
+
     def calculate_totals(self):
         self.composite_tax_rate = (
             self.state_rate +
@@ -46,8 +47,8 @@ class OrderTaxRecord(models.Model):
         super().save(*args, **kwargs)
 
 
-# Модель для зберігання ставок податку для різних юрисдикцій
-# Дані взяті з офіційного сайту податкової служби штату Нью-Йорк
+# Model for storing tax rates for different jurisdictions
+# Data taken from the official website of the New York State Tax Service
 class StateTaxRate(models.Model):
     state_name = models.CharField(max_length=100)
     state_rate = models.DecimalField(max_digits=6, decimal_places=5)
