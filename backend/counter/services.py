@@ -54,7 +54,7 @@ def find_county(lat, lon):
     indices = COUNTIES_TREE.query(point)  # Shapely 2.x returns indexes
     for idx in indices:
         polygon = COUNTIES[idx]["polygon"]
-        if polygon.contains(point):
+        if polygon.covers(point):
             return COUNTIES[idx]["name"]
     return None
 
@@ -64,7 +64,7 @@ def find_city(lat, lon):
     indices = CITIES_TREE.query(point)
     for idx in indices:
         polygon = CITIES[idx]["polygon"]
-        if polygon.contains(point):
+        if polygon.covers(point):
             return CITIES[idx]["name"]
     return None
 
