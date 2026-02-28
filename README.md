@@ -27,7 +27,7 @@ http://localhost:8000/admin/
 3. To delete all records from the OrderTaxRecord table (more than 10k records) at once, run the command:
 docker exec -it betterme_backend python manage.py delete_orders
 
-
+---
 
 The **BetterMeTestTask** project is a web service for automated calculation of sales tax in the state of New York based on the buyer’s coordinates. It uses geospatial data of counties and cities, allowing accurate determination of the tax jurisdiction and application of the corresponding tax rates. The system supports both bulk processing of CSV transaction files and manual input, ensuring calculation accuracy and transparency for accounting and auditing. 
 
