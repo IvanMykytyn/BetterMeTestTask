@@ -31,7 +31,7 @@ docker exec -it betterme_backend python manage.py delete_orders
 
 The **BetterMeTestTask** project is a web service for automated calculation of sales tax in the state of New York based on the buyer’s coordinates. It uses geospatial data of counties and cities, allowing accurate determination of the tax jurisdiction and application of the corresponding tax rates. The system supports both bulk processing of CSV transaction files and manual input, ensuring calculation accuracy and transparency for accounting and auditing. 
 
-The project was developed by the **ColDev** team under the web direction for the All-Ukrainian hackathon **INT20H – 2026**.  
+The project was developed by the **CoolDev** team under the web direction for the All-Ukrainian hackathon **INT20H – 2026**.  
 
 You can access the project here: [BetterMeTestTask](https://bettermetesttask-3.onrender.com)
 
